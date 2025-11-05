@@ -1,0 +1,15 @@
+name: Manual call
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Notify
+    uses: ./.github/workflows/slack-notification.yaml
+    secrets: inherit
+    with:
+      caller_workflow: "テスト用ワークフロー"

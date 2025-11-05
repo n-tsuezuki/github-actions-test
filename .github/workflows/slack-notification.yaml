@@ -1,0 +1,29 @@
+name: Slack notification
+
+on:
+  workflow_call:
+    inputs:
+      caller_workflow:
+        description: "The name of the workflow that called this workflow"
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to slack
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "通知テストです。\nこの通知は無視してください。"
+            attachments:
+              - title: "${{ github.run_id }}"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                text: "${{ inputs.caller_workflow }} を実行しました。"
+
