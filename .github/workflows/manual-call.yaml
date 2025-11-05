@@ -32,6 +32,7 @@ jobs:
           fi
   exec2:
     name: Exec2
+    needs: [exec1]
     runs-on: ubuntu-latest
     steps:
       - name: check input status
