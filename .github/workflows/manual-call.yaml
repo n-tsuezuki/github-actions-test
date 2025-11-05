@@ -3,29 +3,47 @@ name: Manual call
 on:
   workflow_dispatch:
     inputs:
-      status:
-        description: "Exit status"
+      status1:
+        description: "Exit status of exec1"
         required: true
         type: boolean
         default: true
+      status2:
+        description: "Exit status of exec2"
+        required: true
+        type: boolean
+        default: true
+
 
 permissions:
   contents: read
 
 jobs:
-  exec:
-    name: Exec
+  exec1:
+    name: Exec1
     runs-on: ubuntu-latest
     steps:
       - name: check input status
         run: |
-          if ${{ inputs.status }}; then
+          if ${{ inputs.status1 }}; then
+            exit 0
+          else
+            exit 1
+          fi
+  exec2:
+    name: Exec2
+    runs-on: ubuntu-latest
+    steps:
+      - name: check input status
+        run: |
+          if ${{ inputs.status2 }}; then
             exit 0
           else
             exit 1
           fi
   notify:
     name: Notify
+    needs: [exec1, exec2]
     uses: ./.github/workflows/slack-notification.yaml
     if: ${{ failure() }}
     secrets: inherit
