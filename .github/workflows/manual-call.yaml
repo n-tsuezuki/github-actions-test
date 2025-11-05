@@ -2,14 +2,32 @@ name: Manual call
 
 on:
   workflow_dispatch:
+    inputs:
+      status:
+        description: "Exit status"
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
 jobs:
+  exec:
+    name: Exec
+    runs-on: ubuntu-latest
+    steps:
+      - name: check input status
+        run: |
+          if ${{ inputs.status }}; then
+            exit 0
+          else
+            exit 1
+          fi
   notify:
     name: Notify
     uses: ./.github/workflows/slack-notification.yaml
+    if: ${{ failure() }}
     secrets: inherit
     with:
       caller_workflow: "テスト用ワークフロー"
